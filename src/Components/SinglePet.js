@@ -4,6 +4,7 @@ import axios from 'axios';
 import Qs from 'qs';
 import {Link} from 'react-router-dom';
 import firebase from 'firebase';
+import swal from 'sweetalert2';
 
 
 class singlePets extends Component {
@@ -78,12 +79,27 @@ class singlePets extends Component {
         }
     }
 
+    // deleteFromFaves = (petKey) => {
+    //     const confirmDelete = window.confirm('are you sure you want to remove this pet from your faves?');
+    //     if (confirmDelete) {
+    //         firebase.database().ref(`${this.state.user.uid}/faves/${petKey}`).remove();
+    //         alert('removed from faves!');
+    //     }
+    // }
+
     deleteFromFaves = (petKey) => {
-        const confirmDelete = window.confirm('are you sure you want to remove this pet from your faves?');
-        if (confirmDelete) {
-            firebase.database().ref(`${this.state.user.uid}/faves/${petKey}`).remove();
-            alert('removed from faves!');
-        }
+        swal({
+            title: 'Remove this critter from your faves?',
+            type: 'warning',
+            confirmButtonText: 'Delete this critter'
+        }).then((res) => {
+            if (res.value) {
+                swal(
+                    'Deleted!'
+                )
+                firebase.database().ref(`${this.state.user.uid}/faves/${petKey}`).remove();
+            }
+        })
     }
 
     render() {
@@ -116,7 +132,6 @@ class singlePets extends Component {
 
                     </div>
                 </div>
-            
             </div>
         )
     }

@@ -1,17 +1,14 @@
-const google = window.google
+const google = window.google;
 
 const userLocation = () => {
   return new Promise((resolve) => {
     navigator.geolocation.getCurrentPosition(function(position) {
-      console.log(position);
       const userLatitude = parseFloat(position.coords.latitude);
       const userLongitude = parseFloat(position.coords.longitude);
       const latlng = {
         lat: userLatitude,
         lng: userLongitude
-      }
-      console.log(latlng);
-  
+      };
       getLocation(latlng).then(resolve);
     });
   })

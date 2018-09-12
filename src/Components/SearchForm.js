@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router'
+import swal from 'sweetalert2';
 
 class SearchForm extends Component {
     constructor() {
@@ -36,14 +37,18 @@ class SearchForm extends Component {
             this.props.getPets(location, type, age, sex, breed);
             this.setState({ redirect: true })
         } else {
-            alert('please choose a type');
+            swal({
+                title: 'Please choose a type',
+                type: 'error',
+                confirmButtonText: 'OK'
+            })
         }
     }
 
     render() {
         return (
             <form className="search-form" action="" onSubmit={this.handleSubmit}>
-                <input type="text" id="location" value={this.props.location} placeholder="Enter City and Province" onChange={this.handleChange}/>
+                <input type="text" id="location" value={this.props.location} placeholder="City, Province/State" onChange={this.handleChange}/>
                 <select name="types" id="type" onChange={this.handleChange}>
                     <option value="" selected disabled hidden>Choose type</option>
                     <option value="reptile">Reptile</option>
@@ -80,7 +85,7 @@ class SearchForm extends Component {
                     <option value="M">Male</option>
                     <option value="F">Female</option>
                 </select>
-                <input className="search-form-submit button" type="submit" value="FIND YO PET"/>
+                <input className="search-form-submit button" type="submit" value="FIND CRITTER"/>
                 {
                     this.state.redirect && <Redirect to='/results'/>
                 }

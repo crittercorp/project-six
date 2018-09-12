@@ -1,3 +1,8 @@
+
+.single-pets {
+  background-image: url(../Components/glitter-background.gif);
+}
+
 .wrapper-single-pets {
   width: 60%;
   margin: 100px auto;
@@ -24,10 +29,6 @@
     margin-bottom: 10px;
   }
 
-  .box {
-    margin-bottom: 100px;
-  }
-
   .button {
     margin-right: 5px;
     box-shadow: 5px 5px 5px rgba(197, 226, 220, 0.5)
@@ -37,6 +38,7 @@
 
 .single-pets-content {
   padding: 20px 50px;
+  margin-bottom: 50px;
 }
 
 .social-buttons {

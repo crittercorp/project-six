@@ -45,7 +45,10 @@ class Landing extends Component {
                     <SearchForm location={this.props.location} breeds={this.props.breeds} getPets={this.props.getPets}/>
                 </div>
             </div>
-
+            <footer>
+                <p>powered by PetFinder API</p>
+                <p>© 2018 Kandace O'Brien, Scott Girouard, and Susie Kim</p>
+            </footer>
         </div>       
         )
     }

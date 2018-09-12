@@ -11,11 +11,13 @@ class FavePets extends Component {
         super(props);
         this.state = {
             // userID: this.props.user.uid,
-            favePets: []
+            favePets: [],
+            userName: '',
         }
     }
     componentDidMount = () => {
         auth.onAuthStateChanged((user) => {
+            console.log(user);
             let faveRef = firebase.database().ref(`${user.uid}/faves`); 
             faveRef.on('value', (snapshot) => {
                 if (snapshot.val()) {
@@ -29,10 +31,14 @@ class FavePets extends Component {
                             key: pet[0]
                         })
                     });
-                    this.setState({favePets});
+                    this.setState({
+                        favePets: favePets,
+                        userName: user.displayName
+                    });
                 } else {
                     this.setState({
-                        favePets: []
+                        favePets: [],
+                        userName: ''
                     })
                 }
             })
@@ -41,19 +47,30 @@ class FavePets extends Component {
     }
 
     render() {
+
+        
         return (
             <div>
                 <Header user={this.props.user} login={this.props.login} logout={this.props.logout} location={this.props.location} breeds={this.props.breeds} getPets={this.props.getPets} />
                 <div className="fave-pets-body">
-                    <h2 className="fave-pets-heading">FAVE PETS LIST</h2>
+                {
+                    this.state.userName
+                    ? <h2 className="fave-pets-heading">{this.state.userName}'s fave critters</h2>
+                    : <h2 className="fave-pets-heading">your fave critters</h2>
+                }
                     <div className="fave-pets clearfix">
+                        {
+                            this.state.favePets.length === 0 &&
+                            <h3>You have no fave critters. Add some!</h3>
+                        }
                         
                         {
                             this.state.favePets.map((pet) => {
                             return (
                             <div className="saved-pet">        
                                 <PetCard pet={pet} key={pet.key} />
-                                <button className="button delete-button" id={pet.key} onClick={this.props.deleteFromFaves}>DELETE FROM FAVES</button>
+                                <button className="button delete-button" id={pet.key} 
+                                onClick={() => this.props.deleteFromFaves(pet.key)}>DELETE FROM FAVES</button>
                             </div>    
                                 )
                             })

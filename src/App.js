@@ -1,21 +1,19 @@
+// import packages
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import './Styles/App.css';
-import Landing from './Components/Landing';
 import axios from 'axios';
 import Qs from 'qs';
-import ResultPage from './Components/ResultPage';
-import SinglePet from './Components/SinglePet';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import firebase from 'firebase';
+import swal from 'sweetalert2'
 import userLocation from './userLocation';
 import config from './firebase';
-import firebase from 'firebase';
+
+// import components
+import Landing from './Components/Landing';
+import ResultPage from './Components/ResultPage';
+import SinglePet from './Components/SinglePet';
 import FavePets from './Components/FavePets'
-// ES6 Modules or TypeScript
-import swal from 'sweetalert2'
-
-// CommonJS
-// const swal = require('sweetalert2')
-
 const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
@@ -37,14 +35,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-
         userLocation().then((loc) => {
             console.log(loc);
             this.setState({
                 location: loc
             })
         });
-
         const getBreeds = (animal) => {
             axios({
                 url: 'https://proxy.hackeryou.com',
@@ -99,11 +95,9 @@ class App extends Component {
     }
 
     logout = () => {
-        // let signOut = window.confirm('are you sure you wanna sign out?');
         swal({
             title: 'Do you want to logout?',
-            // text: 'Do you want to delete this critter?',
-            type: 'error',
+            type: 'warning',
             confirmButtonText: 'LOG OUT'
         })
         .then((res) => {
@@ -112,9 +106,7 @@ class App extends Component {
                 // alert('signed out!');
                 swal({
                     title: 'Logged out!',
-                    // text: 'Do you want to delete this critter?',
-                    type: 'success',
-                    confirmButtonText: 'Success!'
+                    type: 'success'
                 })
                 auth.signOut().then(() => {
                     this.setState({
@@ -149,42 +141,35 @@ class App extends Component {
 
     addToFaves = (pet) => {
         if (this.isFavorite(pet)) {
-            alert('this pet is already in your faves')
+            swal({
+                type: 'error',
+                text: 'This animal is already on your faves!'
+            })
         } else {
             firebase.database().ref(`${this.state.user.uid}/faves`).push(pet);
-            alert('added to faves!');
+            swal({
+                type: 'success',
+                text: 'Added to faves!'
+            })
         }
     }
 
-    deleteFromFaves = (e) => {
-        const target = Object.assign(e.target)
+    deleteFromFaves = (key) => {
         swal({
             title: 'Do you want to delete this critter?',
-            // text: 'Do you want to delete this critter?',
             type: 'warning',
             confirmButtonText: 'Delete this critter'
-        })
-
-        .then((res) => {
-            console.log(target);
+        }).then((res) => {
             if (res.value) {
                 swal(
                     'Deleted!'
                 )
-                firebase.database().ref(`${this.state.user.uid}/faves/${target.id}`).remove();
+                firebase.database().ref(`${this.state.user.uid}/faves/${key}`).remove();
             }
         })
-
-        // const confirmDelete = window.confirm('are you sure you want to remove this pet from your faves?');
-        // if (confirmDelete) {
-        //     firebase.database().ref(`${this.state.user.uid}/faves/${e.target.id}`).remove();
-            
-        // }
     }
 
-
     getPets = (location, type, age, sex, breed) => {
-        console.log(location, type, age, sex, breed);
         this.setState({
             pets: []
         })
@@ -228,9 +213,6 @@ class App extends Component {
                             && pet.id.$t
                             && pet.age.$t
                     });
-                    if (pets.length === 0){
-                        alert('it is 0')
-                    }
                     let petsList = pets.map(pet => {
                         return ({
                             name: pet.name.$t,
@@ -243,9 +225,8 @@ class App extends Component {
                         })
                     })
                     this.setState({pets: petsList});
-                } else if(petsArray[0].media.photos){
+                } else if(petsArray[0].media.photos) {
                     let pet = [ petsArray[0] ]; 
-
                     let petsList = pet.map(pet => {
                         return ({
                             name: pet.name.$t,
@@ -256,15 +237,25 @@ class App extends Component {
                             age: pet.age.$t
                         })
                     })
-
                     this.setState({
                         pets: petsList
                     })
                 } else {
-                    alert('NO PET PHOTKA');
+                    swal({
+                        title: 'Sorry, no critters match your criteria',
+                        text: 'Try another search.',
+                        type: 'error',
+                        confirmButtonText: 'OK'
+                    })
                 }
+            } else {
+                swal({
+                    title: 'Sorry, no critters match your criteria',
+                    text: 'Try another search.',
+                    type: 'error',
+                    confirmButtonText: 'OK'
+                })
             }
-            else {alert('no pets SAAAAWRY')}; 
         })
     }
     
@@ -272,18 +263,8 @@ class App extends Component {
         return (
             <Router>
                 <div className="App">
-                    {/* <Route exact path="/" render={(props) => (
-                        this.state.pets.length === 0 ?
+                    <Route exact path="/" render={(props) => (
                         <Landing {...props} user={this.state.user} login={this.login} logout={this.logout} breeds={this.state.breeds} getPets={this.getPets} location={this.state.location}/>
-                        :
-                        <Redirect to="/results" />
-                    )}/> */}
-
-                      <Route exact path="/" render={(props) => (
-                        // this.state.pets.length === 0 ?
-                        <Landing {...props} user={this.state.user} login={this.login} logout={this.logout} breeds={this.state.breeds} getPets={this.getPets} location={this.state.location}/>
-                        // :
-                        // <Redirect to="/results" />
                     )}/>
 
                     <Route path="/pet/:pet_id" render={(props) => (
@@ -301,7 +282,6 @@ class App extends Component {
                 </div>
             </Router>
         );
-
     }
 }
 

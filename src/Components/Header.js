@@ -34,7 +34,7 @@ class Header extends Component {
                 {
                     this.props.user && <Link className="link button header-button" to='/faves'>Faves</Link>
                 }
-            <label className="dropdown-button button" htmlFor="dropdown"><i class="fas fa-search"></i></label>
+            <label className="dropdown-button header-button button" htmlFor="dropdown"><i class="fas fa-search"></i></label>
             <input type="checkbox" id="dropdown"/>
             <SearchForm startLoader={this.props.startLoader} location={this.props.location} breeds={this.props.breeds} getPets={this.props.getPets}/>
         </div>

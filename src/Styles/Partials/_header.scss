@@ -33,6 +33,7 @@ input[type=checkbox] {
 
 .main-header {
   background-color: $tertiary;
+  background-image: url(../Components/glitter-background.gif);
   
   .search-form {
     width: 60%;
@@ -54,11 +55,11 @@ input[type=checkbox] {
   .dropdown-button {
     float: right;
     display: block;
-    width: 30px;
-    height: 25px;
+    // width: 30px;
+    // height: 30px;
     background-color: $secondary;
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-align: center;
   }
 
@@ -84,9 +85,14 @@ input[type=checkbox] {
       width: 80%;
       text-align: center;
       margin: 0 auto;
-      box-shadow: 5px 5px 10px $primary;
-
     }
 
   }
+}
+
+@media (max-width: 320px) {
+    .header-button {
+      font-size: 0.6rem;
+      padding: 4px;
+    }
 }
